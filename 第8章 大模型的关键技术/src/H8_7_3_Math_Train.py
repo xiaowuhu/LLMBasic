@@ -99,7 +99,7 @@ def sft_model(model, train_loader, valid_loader, device, model_output_dir):
     )
 
     log_step = 50
-    valid_step = 1000
+    valid_step = 500
     overall_step = 0 # 整体的迭代计数器
     running_loss = 0
     now = datetime.now()
@@ -125,10 +125,11 @@ def sft_model(model, train_loader, valid_loader, device, model_output_dir):
             if (internal_step + 1) % log_step == 0:
                 running_loss = running_loss / log_step
                 tb_writer.add_scalar('loss', running_loss, overall_step)
-                print('now time: {}:{}. Step {} of epoch {}, loss={}, lr={}'.format(
+                print('now time: {}:{}. Step {}/{} of epoch {}, loss={}, lr={}'.format(
                         datetime.now().hour, 
                         datetime.now().minute, 
                         internal_step + 1, 
+                        len(train_loader),
                         epoch + 1, 
                         running_loss,
                         lr_scheduler.get_lr()[0],
@@ -169,9 +170,9 @@ def load_data(split):
 
 if __name__=="__main__":
     print("load tokenizer")
-    model_path = "gpt2-medium"
+    model_path = "gpt2-large"
     tokenizer = GPT2Tokenizer.from_pretrained(model_path)
-    batch_size = 2
+    batch_size = 6
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("load model")
     model = GPT2LMHeadModel.from_pretrained(model_path)
@@ -191,8 +192,7 @@ if __name__=="__main__":
         collate_fn=customized_collate_fn,
         shuffle=True,
         drop_last=False,
-        num_workers=4,
-        #persistent_workers=True
+        num_workers=0,
     )
 
     ds_test = load_data("test")
@@ -203,8 +203,7 @@ if __name__=="__main__":
         collate_fn=customized_collate_fn,
         shuffle=False,
         drop_last=False,
-        num_workers=4,
-        #persistent_workers=True
+        num_workers=0,
     )
     print("start training...")
     output_dir = "../model/ch8/math/"

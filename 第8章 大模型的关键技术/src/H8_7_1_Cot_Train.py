@@ -159,10 +159,12 @@ def sft_model(model, train_loader, valid_loader, device, model_output_dir):
 if __name__=="__main__":
     model_path = "gpt2-medium"
     tokenizer = GPT2Tokenizer.from_pretrained(model_path)
+    print("特殊 token:", tokenizer.special_tokens_map)
     batch_size = 2
-    epochs = 10
+    epochs = 5
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = GPT2LMHeadModel.from_pretrained(model_path)
+    print(f"模型参数: {model.num_parameters():,}")    
     model.to(device)
     customized_collate_fn = partial(
         custom_collate_fn,

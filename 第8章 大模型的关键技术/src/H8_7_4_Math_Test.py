@@ -4,6 +4,7 @@ from H8_7_3_Math_Train import load_data
 from tqdm import tqdm
 import json
 
+
 def use_calculator(sample):
     if "<<" not in sample:
         return None
@@ -18,9 +19,14 @@ def use_calculator(sample):
     lhs = lhs.replace(",", "")
     if any([x not in "0123456789*+-/.()" for x in lhs]):
         return None
-    return eval(lhs)
+    try:
+        result = eval(lhs)
+    except:
+        result = 0
+    finally:
+        return result
 
-def sample(model, question, tokenizer: GPT2Tokenizer, device, sample_len):
+def sample(model, question, tokenizer, device, sample_len):
     EQUALS_TOKENS = set([28, 796, 47505])
 
     for _ in range(sample_len):
@@ -53,18 +59,13 @@ def get_answer(text):
     except:
         return 0
 
-def test_all():
-    model_path = "gpt2-medium"
-    tokenizer = GPT2Tokenizer.from_pretrained(model_path)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = GPT2LMHeadModel.from_pretrained("../model/ch8/math/model_epoch4")
-    model.to(device)
-    model.eval()
+def test_all(model, tokenizer, device):
     total_correct = 0
     with open("../data/GSM8K_math/test_result.json", "w", encoding='utf-8') as file:
         results = []
         ds = load_data("test")
         print(len(ds))
+        i = 0
         for data in tqdm(ds):
             result = {}
             result["answer"] = get_answer(data['answer'])
@@ -78,17 +79,15 @@ def test_all():
                 total_correct += 1
             else:
                 result["correct"] = 0
+            i += 1
+            if (i+1)%10 == 0:
+                print(f"{total_correct} / {i}")
         json.dump(results, file)
     print(total_correct, len(ds))
 
-def test_some(testing_list):
-    model_path = "gpt2-medium"
-    tokenizer = GPT2Tokenizer.from_pretrained(model_path)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = GPT2LMHeadModel.from_pretrained("../model/ch8/math/model_epoch4")
-    model.to(device)
-    model.eval()
-    ds = load_data("test")
+def test_some(testing_list, model, tokenizer, device):
+#    ds = load_data("test")
+    ds = load_data("train")
     for idx in testing_list:    
         print(f"---- {idx} ----")
         data = ds[idx-1]
@@ -99,5 +98,16 @@ def test_some(testing_list):
 
 
 if __name__ == "__main__":
-    #test_all()
-    test_some([1,2,4,5,24,30])
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model_path = "gpt2-large"
+    tokenizer = GPT2Tokenizer.from_pretrained(model_path)
+    model = GPT2LMHeadModel.from_pretrained(model_path)
+    #model = GPT2LMHeadModel.from_pretrained("../model/ch8/math/model_epoch5")
+    # model_path = "Qwen/Qwen2.5-0.5B-Instruct"
+    # tokenizer = AutoTokenizer.from_pretrained(model_path)
+    # model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
+    model.to(device)
+    model.eval()
+
+    #test_all(model, tokenizer, device)
+    test_some([1,2,4,5,24,30], model, tokenizer, device)
