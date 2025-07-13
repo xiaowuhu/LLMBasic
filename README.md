@@ -34,3 +34,23 @@
 本书封面以黄色为主，切合生成式大语言模型的主题，也是微软徽标的四色之一。封面上绘制了一把黄色面板的木吉他，因此可以叫做“木吉他书”。
 
 除本书外，笔者还完成了其它几本书，如：红色封面的“键盘书”（《智能之门：软件工程最佳实践》）；绿色封面的“贝斯书”（《智能之门：强化学习基础》）；蓝色封面的“电吉他书”（《智能之门：深度学习基础》。这四本书将会陆续出版，形成一套完整的 AI 时代的知识学习体系。
+
+## 环境搭建
+
+1. 操作系统可以选用 Windows 11 或 WSL 或 Linux，建议使用Windows 11，可完成大部分试验。最后一章在做强化学习试验时需要使用 WSL。
+2. 根据不同的操作系统，选择 Mini Conda 安装包：https://www.anaconda.com/docs/getting-started/miniconda/install
+3. 在 Conda 环境中建立虚拟 `llm0` 环境：`conda create -n llm0 -python=3.11`
+4. 进入该环境：`conda activate llm0` 
+5. 安装所需python包：`pip install -r requirement.txt`。其中，`requirement.txt` 文件中包含了笔者所曾经使用的全部第三方包，仅供读者可以参考。但是必须要安装的包有以下几个包的最新版本：
+
+- trl
+- transformers
+- tqdm
+- torch（GPU版）
+- torchdata
+- torchtext
+- numpy
+- matplotlib
+
+其他包可以暂时不按照，在运行示例代码时如果遇到了“未找到安装包”的错误，可以再临时安装，以节省硬盘空间。相信这对于熟悉Python环境的读者来说很容易解决。
+
