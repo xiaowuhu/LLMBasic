@@ -37,11 +37,11 @@
 
 ## 环境搭建
 
-1. 操作系统可以选用 Windows 11 或 WSL 或 Linux，建议使用Windows 11，可完成大部分试验。最后一章在做强化学习试验时需要使用 WSL。
+1. 操作系统可以选用 Windows 11 或 WSL 或 Linux，建议使用Windows 11，可完成大部分试验。最后一章在做强化学习试验时需要使用Linux。
 2. 根据不同的操作系统，选择 Mini Conda 安装包：https://www.anaconda.com/docs/getting-started/miniconda/install
 3. 在 Conda 环境中建立虚拟 `llm0` 环境：`conda create -n llm0 -python=3.11`
 4. 进入该环境：`conda activate llm0` 
-5. 安装所需python包：`pip install -r requirements.txt`。其中，`requirements.txt` 文件中包含了笔者所曾经使用的全部第三方包，仅供读者可以参考。但是必须要安装的包有以下几个包的最新版本：
+5. 安装所需python包：`pip install -r requirements.txt`。其中，`requirements.txt` 文件中包含了笔者所曾经使用的全部第三方包，仅供读者参考。但是必须要安装的包有以下几个包的最新版本：
 
 - trl
 - transformers
